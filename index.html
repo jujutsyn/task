@@ -1,0 +1,315 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quest Log: Путь Мастера</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0c0c0e;
+            color: #e2e8f0;
+            background-image: radial-gradient(circle at 50% 50%, #1a1a2e 0%, #0c0c0e 100%);
+            min-height: 100vh;
+            margin: 0;
+            overflow-x: hidden;
+        }
+
+        .witcher-border {
+            border: 1px solid #4a4a4a;
+            position: relative;
+        }
+
+        .witcher-border::before {
+            content: '';
+            position: absolute;
+            top: -2px; left: -2px; right: -2px; bottom: -2px;
+            border: 1px solid #c5a059;
+            opacity: 0.3;
+            pointer-events: none;
+        }
+
+        .quest-title {
+            color: #c5a059;
+            text-shadow: 0 0 10px rgba(197, 160, 89, 0.3);
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
+        }
+
+        .btn-witcher {
+            background: linear-gradient(180deg, #2d2d2d 0%, #1a1a1a 100%);
+            border: 1px solid #c5a059;
+            color: #c5a059;
+            transition: all 0.2s ease;
+            cursor: pointer;
+        }
+
+        .btn-witcher:hover {
+            background: #c5a059;
+            color: #0c0c0e;
+            box-shadow: 0 0 15px rgba(197, 160, 89, 0.5);
+        }
+
+        .btn-danger {
+            border: 1px solid #7f1d1d;
+            color: #f87171;
+        }
+
+        .btn-danger:hover {
+            background: #7f1d1d;
+            color: white;
+            box-shadow: 0 0 15px rgba(127, 29, 29, 0.5);
+        }
+
+        .progress-bar {
+            height: 4px;
+            background: #1a1a1a;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: #c5a059;
+            box-shadow: 0 0 10px #c5a059;
+            transition: width 0.5s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        textarea {
+            background: #161618 !important;
+            border: 1px solid #333 !important;
+            color: #ccc !important;
+            resize: none;
+        }
+
+        /* Custom Modal Style */
+        #modal-overlay {
+            background: rgba(0, 0, 0, 0.85);
+            backdrop-filter: blur(4px);
+        }
+    </style>
+</head>
+<body class="flex items-center justify-center p-4">
+
+    <div id="app" class="w-full max-w-2xl">
+        
+        <!-- Progress Header -->
+        <div id="progress-container" class="mb-12 hidden">
+            <div class="flex justify-between items-end mb-2">
+                <span class="text-[10px] uppercase tracking-[0.2em] text-gray-500 font-bold">Прогресс приключения</span>
+                <span id="progress-percent" class="text-xs font-bold text-amber-500">0%</span>
+            </div>
+            <div class="progress-bar rounded-full">
+                <div id="progress-fill" class="progress-fill w-0"></div>
+            </div>
+        </div>
+
+        <!-- Planning View -->
+        <div id="view-setup" class="witcher-border bg-[#161618]/80 p-8 rounded-sm shadow-2xl fade-in">
+            <h1 class="quest-title text-2xl font-bold mb-6 text-center">Подготовка к Пути</h1>
+            <p class="text-gray-400 text-sm mb-4">Впишите свои задачи (каждая с новой строки). Сегодня вы — мастер своего дела.</p>
+            
+            <textarea id="task-input" class="w-full h-64 p-4 rounded-sm mb-6 focus:outline-none focus:border-amber-500 transition-colors" placeholder="Например:&#10;Оседлать Плотву&#10;Выполнить заказ на эликсиры&#10;Посетить корчму"></textarea>
+            
+            <div class="flex justify-center">
+                <button id="btn-start" class="btn-witcher px-10 py-3 font-bold text-sm uppercase tracking-widest">
+                    Начать Путь
+                </button>
+            </div>
+        </div>
+
+        <!-- Quest View (HUD) -->
+        <div id="view-quest" class="hidden text-center">
+            <div class="mb-2">
+                <span class="text-[10px] uppercase tracking-[0.3em] text-gray-500 font-bold">Текущая цель</span>
+            </div>
+            <div class="witcher-border bg-[#161618]/90 p-12 rounded-sm shadow-2xl relative overflow-hidden">
+                <div class="absolute top-0 left-0 w-full h-1 bg-amber-500/20"></div>
+                
+                <h2 id="active-task-text" class="text-2xl md:text-4xl font-light mb-10 leading-tight min-h-[3rem]">
+                    —
+                </h2>
+
+                <div class="flex flex-col items-center gap-4">
+                    <button id="btn-complete" class="btn-witcher px-12 py-4 font-black text-base uppercase tracking-widest w-full md:w-auto">
+                        Завершить шаг
+                    </button>
+                    <button id="btn-abandon" class="text-gray-600 hover:text-red-400 text-[10px] uppercase tracking-widest mt-4 transition-colors">
+                        Прервать задание
+                    </button>
+                </div>
+            </div>
+            <div id="next-task-hint" class="mt-8 text-gray-600 text-[10px] uppercase tracking-[0.2em] font-bold">
+                Остальные цели скрыты в тумане войны
+            </div>
+        </div>
+
+        <!-- Victory View -->
+        <div id="view-victory" class="hidden text-center fade-in">
+            <div class="witcher-border bg-[#161618]/95 p-16 rounded-sm shadow-2xl">
+                <div class="text-5xl mb-6 text-amber-500">⚔️</div>
+                <h2 class="quest-title text-3xl font-bold mb-4">Задание Выполнено</h2>
+                <p class="text-gray-400 mb-10">Все цели на сегодня достигнуты. Вы получили опыт и право на отдых.</p>
+                <button id="btn-new-day" class="btn-witcher px-10 py-3 font-bold text-sm uppercase tracking-widest">
+                    Новый день — Новый путь
+                </button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Custom Confirmation Modal -->
+    <div id="modal-overlay" class="fixed inset-0 hidden flex items-center justify-center z-50 p-4">
+        <div class="witcher-border bg-[#1a1a1c] p-8 max-w-sm w-full shadow-2xl text-center">
+            <h3 class="quest-title text-lg font-bold mb-4">Прервать Путь?</h3>
+            <p class="text-gray-400 text-sm mb-8">Все текущие задачи будут стерты из журнала заданий.</p>
+            <div class="flex gap-4">
+                <button id="btn-modal-cancel" class="flex-1 bg-gray-800 py-3 text-xs uppercase font-bold tracking-widest hover:bg-gray-700">Отмена</button>
+                <button id="btn-modal-confirm" class="flex-1 btn-witcher btn-danger py-3 text-xs uppercase font-bold tracking-widest">Прервать</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // State management
+        let state = {
+            tasks: [],
+            currentIndex: 0
+        };
+
+        const elements = {
+            setup: document.getElementById('view-setup'),
+            quest: document.getElementById('view-quest'),
+            victory: document.getElementById('view-victory'),
+            progress: document.getElementById('progress-container'),
+            input: document.getElementById('task-input'),
+            activeText: document.getElementById('active-task-text'),
+            fill: document.getElementById('progress-fill'),
+            percent: document.getElementById('progress-percent'),
+            modal: document.getElementById('modal-overlay')
+        };
+
+        // Initialize from storage
+        function init() {
+            const saved = localStorage.getItem('witcher_quest_log_v2');
+            if (saved) {
+                state = JSON.parse(saved);
+                if (state.tasks.length > 0) {
+                    if (state.currentIndex >= state.tasks.length) {
+                        showScreen('victory');
+                    } else {
+                        showScreen('quest');
+                    }
+                }
+            }
+
+            // Event Listeners
+            document.getElementById('btn-start').addEventListener('click', startQuest);
+            document.getElementById('btn-complete').addEventListener('click', completeStep);
+            document.getElementById('btn-abandon').addEventListener('click', () => toggleModal(true));
+            document.getElementById('btn-modal-cancel').addEventListener('click', () => toggleModal(false));
+            document.getElementById('btn-modal-confirm').addEventListener('click', resetApp);
+            document.getElementById('btn-new-day').addEventListener('click', resetApp);
+        }
+
+        function save() {
+            localStorage.setItem('witcher_quest_log_v2', JSON.stringify(state));
+        }
+
+        function startQuest() {
+            const val = elements.input.value;
+            const lines = val.split('\n').map(l => l.trim()).filter(l => l !== '');
+            
+            if (lines.length === 0) return;
+
+            state.tasks = lines;
+            state.currentIndex = 0;
+            save();
+            showScreen('quest');
+        }
+
+        function completeStep() {
+            state.currentIndex++;
+            save();
+            
+            if (state.currentIndex >= state.tasks.length) {
+                showScreen('victory');
+            } else {
+                updateHUD();
+            }
+        }
+
+        function showScreen(screen) {
+            elements.setup.classList.add('hidden');
+            elements.quest.classList.add('hidden');
+            elements.victory.classList.add('hidden');
+            elements.progress.classList.add('hidden');
+
+            if (screen === 'setup') {
+                elements.setup.classList.remove('hidden');
+            } else if (screen === 'quest') {
+                elements.quest.classList.remove('hidden');
+                elements.progress.classList.remove('hidden');
+                updateHUD();
+            } else if (screen === 'victory') {
+                elements.victory.classList.remove('hidden');
+                elements.progress.classList.remove('hidden');
+                updateProgress();
+            }
+        }
+
+        function updateHUD() {
+            elements.activeText.classList.remove('fade-in');
+            void elements.activeText.offsetWidth; // trigger reflow
+            
+            elements.activeText.innerText = state.tasks[state.currentIndex] || '—';
+            elements.activeText.classList.add('fade-in');
+            updateProgress();
+        }
+
+        function updateProgress() {
+            const total = state.tasks.length;
+            const current = state.currentIndex;
+            const progress = total === 0 ? 0 : (current / total) * 100;
+            
+            elements.fill.style.width = `${progress}%`;
+            elements.percent.innerText = `${Math.round(progress)}%`;
+        }
+
+        function toggleModal(show) {
+            if (show) {
+                elements.modal.classList.remove('hidden');
+                elements.modal.classList.add('flex');
+            } else {
+                elements.modal.classList.add('hidden');
+                elements.modal.classList.remove('flex');
+            }
+        }
+
+        function resetApp() {
+            // Reset state
+            state = { tasks: [], currentIndex: 0 };
+            localStorage.removeItem('witcher_quest_log_v2');
+            
+            // UI Reset
+            elements.input.value = '';
+            toggleModal(false);
+            showScreen('setup');
+        }
+
+        // Run on load
+        init();
+    </script>
+</body>
+</html>
