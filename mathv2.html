@@ -1,13 +1,14 @@
 <!DOCTYPE html>
 <html lang="ru" class="scroll-smooth">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Do The Math | ZAUSHITSYN GROUP</title>
+    <title>Математика = путь | ZAUSHITSYN GROUP</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://unpkg.com/lucide@latest"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap" rel="stylesheet">
-    
+
     <style>
         :root {
             --gold: #ca8a04;
@@ -46,7 +47,7 @@
         .scenario-card {
             transition: all 0.2s ease;
         }
-        
+
         .scenario-card:hover {
             border-color: var(--gold);
             background: rgba(202, 138, 4, 0.05);
@@ -54,7 +55,7 @@
         }
 
         .bg-mesh {
-            background-image: 
+            background-image:
                 radial-gradient(at 0% 0%, rgba(202, 138, 4, 0.05) 0, transparent 40%),
                 radial-gradient(at 100% 100%, rgba(30, 58, 138, 0.05) 0, transparent 40%);
         }
@@ -64,44 +65,53 @@
             right: 0;
             border-color: #ca8a04;
         }
-        .toggle-checkbox:checked + .toggle-label {
+
+        .toggle-checkbox:checked+.toggle-label {
             background-color: #ca8a04;
         }
     </style>
 </head>
-<body class="bg-mesh min-h-screen pb-20 selection:bg-amber-500/30">
+
+<body class="bg-mesh min-h-screen selection:bg-amber-500/30">
 
     <!-- Header -->
     <header class="border-b border-white/5 bg-black/80 backdrop-blur-md sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
             <div class="leading-none group cursor-pointer">
                 <span class="text-xl font-black uppercase tracking-tighter block text-white">ZAUSHITSYN</span>
-                <span class="text-[10px] text-zinc-500 uppercase tracking-[0.3em] font-bold">Financial Command</span>
+                <span class="text-[10px] text-zinc-500 uppercase tracking-[0.3em] font-bold">Финансовое
+                    планирование</span>
             </div>
-            <div class="text-[10px] font-bold uppercase tracking-widest text-amber-600 border border-amber-600/30 px-3 py-1 rounded-full">
-                System: Active
+            <div
+                class="text-[10px] font-bold uppercase tracking-widest text-amber-600 border border-amber-600/30 px-3 py-1 rounded-full">
+                Система: Активна
             </div>
         </div>
     </header>
 
-    <main class="max-w-7xl mx-auto px-6 py-12 space-y-16">
+    <main class="max-w-7xl mx-auto px-6 pt-12 pb-0 space-y-16">
 
         <!-- SECTION 1: TARGET SETTING -->
         <section class="grid grid-cols-1 lg:grid-cols-12 gap-12">
             <div class="lg:col-span-4 space-y-8">
                 <div>
                     <h1 class="text-4xl font-black uppercase tracking-tight text-white mb-2">1. Цель</h1>
-                    <p class="text-zinc-500 text-xs font-bold uppercase tracking-widest">Target Definition</p>
+                    <p class="text-zinc-500 text-xs font-bold uppercase tracking-widest">Определение цели</p>
                 </div>
-                
+
                 <div class="space-y-6">
                     <div>
-                        <label class="text-[10px] uppercase font-bold text-zinc-500 mb-2 block">Финансовая цель (₽)</label>
-                        <input type="number" id="targetAmount" value="1000000" class="w-full p-5 rounded-none border border-zinc-800 bg-zinc-900 text-3xl font-black text-white focus:border-amber-600 focus:outline-none transition-colors" oninput="calculateMath()">
+                        <label class="text-[10px] uppercase font-bold text-zinc-500 mb-2 block">Финансовая цель
+                            (₽)</label>
+                        <input type="number" id="targetAmount" value="1000000"
+                            class="w-full p-5 rounded-none border border-zinc-800 bg-zinc-900 text-3xl font-black text-white focus:border-amber-600 focus:outline-none transition-colors"
+                            oninput="calculateMath()">
                     </div>
                     <div>
                         <label class="text-[10px] uppercase font-bold text-zinc-500 mb-2 block">Срок (Дней)</label>
-                        <input type="number" id="targetDays" value="90" class="w-full p-5 rounded-none border border-zinc-800 bg-zinc-900 text-3xl font-black text-white focus:border-amber-600 focus:outline-none transition-colors" oninput="calculateMath()">
+                        <input type="number" id="targetDays" value="90"
+                            class="w-full p-5 rounded-none border border-zinc-800 bg-zinc-900 text-3xl font-black text-white focus:border-amber-600 focus:outline-none transition-colors"
+                            oninput="calculateMath()">
                     </div>
                 </div>
 
@@ -115,19 +125,22 @@
                 <div class="flex justify-between items-start mb-8">
                     <div>
                         <h3 class="text-xl font-black uppercase tracking-tight text-white">2. Сценарии</h3>
-                        <p class="text-zinc-500 text-xs font-bold uppercase tracking-widest mt-1">Reverse Engineering</p>
+                        <p class="text-zinc-500 text-xs font-bold uppercase tracking-widest mt-1">Декомпозиция
+                        </p>
                     </div>
                     <i data-lucide="crosshair" class="text-zinc-700 w-6 h-6"></i>
                 </div>
-                
+
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-4" id="scenariosGrid">
                     <!-- JS Generated Scenarios -->
                 </div>
-                
+
                 <div class="mt-8 flex gap-4 items-start p-4 bg-amber-500/5 border border-amber-500/10">
                     <i data-lucide="info" class="text-amber-600 w-4 h-4 mt-0.5"></i>
                     <p class="text-xs text-zinc-400 font-medium leading-relaxed">
-                        <strong class="text-amber-500 uppercase">Правило 10X:</strong> Если для достижения цели вам нужно совершать 1000 продаж в день, ваша модель сломана. Либо повышайте чек, либо меняйте машину (Vehicle).
+                        <strong class="text-amber-500 uppercase">Правило 10X:</strong> Если для достижения цели вам
+                        нужно совершать 1000 продаж в день, ваша модель сломана. Либо повышайте чек, либо меняйте
+                        "машину"
                     </p>
                 </div>
             </div>
@@ -139,20 +152,24 @@
                 <div class="lg:col-span-4 space-y-8">
                     <div>
                         <h2 class="text-3xl font-black uppercase tracking-tight text-white mb-2">3. Продукт</h2>
-                        <p class="text-zinc-500 text-xs font-bold uppercase tracking-widest">Vehicle Configuration</p>
+                        <p class="text-zinc-500 text-xs font-bold uppercase tracking-widest">Конфигурация машины</p>
                     </div>
-                    
+
                     <div>
                         <label class="text-[10px] uppercase font-bold text-zinc-500 mb-2 block">Цена услуги (₽)</label>
-                        <input type="number" id="productPrice" value="50000" class="w-full p-5 rounded-none border border-zinc-800 bg-zinc-900 text-2xl font-bold text-blue-400 focus:border-blue-500 focus:outline-none transition-colors" oninput="calculateCustomMath()">
+                        <input type="number" id="productPrice" value="50000"
+                            class="w-full p-5 rounded-none border border-zinc-800 bg-zinc-900 text-2xl font-bold text-blue-400 focus:border-blue-500 focus:outline-none transition-colors"
+                            oninput="calculateCustomMath()">
                     </div>
 
                     <div class="flex items-center justify-between p-5 border border-zinc-800 bg-zinc-900/50">
                         <div>
                             <span class="text-sm font-bold text-white block">Подписка (LTV)?</span>
-                            <span class="text-[10px] text-zinc-500 uppercase font-bold tracking-widest">Recuring Revenue</span>
+                            <span class="text-[10px] text-zinc-500 uppercase font-bold tracking-widest">Реккурент</span>
                         </div>
-                        <input type="checkbox" id="isRecurring" class="w-6 h-6 rounded border-zinc-600 bg-zinc-800 text-amber-600 focus:ring-amber-600 accent-amber-600" onchange="calculateCustomMath()">
+                        <input type="checkbox" id="isRecurring"
+                            class="w-6 h-6 rounded border-zinc-600 bg-zinc-800 text-amber-600 focus:ring-amber-600 accent-amber-600"
+                            onchange="calculateCustomMath()">
                     </div>
                 </div>
 
@@ -176,8 +193,10 @@
                     </div>
 
                     <!-- Weekly (Highlight) -->
-                    <div class="bg-zinc-900 p-8 border-t-4 border-amber-600 h-full flex flex-col justify-between relative overflow-hidden group">
-                        <div class="absolute inset-0 bg-amber-600/5 group-hover:bg-amber-600/10 transition-colors"></div>
+                    <div
+                        class="bg-zinc-900 p-8 border-t-4 border-amber-600 h-full flex flex-col justify-between relative overflow-hidden group">
+                        <div class="absolute inset-0 bg-amber-600/5 group-hover:bg-amber-600/10 transition-colors">
+                        </div>
                         <i data-lucide="target" class="text-amber-600 w-6 h-6 mb-4"></i>
                         <div>
                             <p class="text-5xl font-black text-amber-500 mb-2" id="neededWeekly">1.5</p>
@@ -192,50 +211,66 @@
         <section class="border-t border-zinc-800 pt-16">
             <div class="mb-12">
                 <h2 class="text-3xl font-black uppercase tracking-tight text-white mb-2">4. 10X Действия</h2>
-                <p class="text-zinc-500 text-xs font-bold uppercase tracking-widest">Execution Plan</p>
+                <p class="text-zinc-500 text-xs font-bold uppercase tracking-widest">План реализации</p>
             </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
                 <!-- Inputs -->
                 <div class="lg:col-span-1 space-y-6 p-6 border border-zinc-800 bg-zinc-900/30">
-                    <h4 class="text-xs font-bold uppercase text-white mb-4 border-b border-zinc-800 pb-2">Воронка продаж</h4>
+                    <h4 class="text-xs font-bold uppercase text-white mb-4 border-b border-zinc-800 pb-2">Воронка продаж
+                    </h4>
                     <div>
-                        <label class="text-[10px] uppercase font-bold text-zinc-500 mb-2 block">Конверсия в продажу (%)</label>
-                        <input type="number" id="conversionRate" value="10" class="w-full p-3 bg-zinc-900 border border-zinc-700 text-white font-bold text-center focus:border-amber-600 focus:outline-none" oninput="calculateActions()">
+                        <label class="text-[10px] uppercase font-bold text-zinc-500 mb-2 block">Конверсия в продажу
+                            (%)</label>
+                        <input type="number" id="conversionRate" value="10"
+                            class="w-full p-3 bg-zinc-900 border border-zinc-700 text-white font-bold text-center focus:border-amber-600 focus:outline-none"
+                            oninput="calculateActions()">
                     </div>
                     <div>
-                        <label class="text-[10px] uppercase font-bold text-zinc-500 mb-2 block">Лид -> Встреча (%)</label>
-                        <input type="number" id="meetingRate" value="30" class="w-full p-3 bg-zinc-900 border border-zinc-700 text-white font-bold text-center focus:border-amber-600 focus:outline-none" oninput="calculateActions()">
+                        <label class="text-[10px] uppercase font-bold text-zinc-500 mb-2 block">Лид -> Встреча
+                            (%)</label>
+                        <input type="number" id="meetingRate" value="30"
+                            class="w-full p-3 bg-zinc-900 border border-zinc-700 text-white font-bold text-center focus:border-amber-600 focus:outline-none"
+                            oninput="calculateActions()">
                     </div>
                 </div>
 
                 <!-- Results -->
                 <div class="lg:col-span-3 grid grid-cols-1 md:grid-cols-3 gap-6">
                     <!-- Calls -->
-                    <div class="p-8 border border-zinc-800 bg-zinc-900/50 hover:border-blue-600 transition-colors group">
+                    <div
+                        class="p-8 border border-zinc-800 bg-zinc-900/50 hover:border-blue-600 transition-colors group">
                         <div class="flex justify-between items-start mb-6">
-                            <span class="text-[10px] font-black uppercase bg-blue-900/20 text-blue-500 px-2 py-1">Outbound</span>
-                            <i data-lucide="phone" class="text-zinc-700 group-hover:text-blue-500 transition-colors"></i>
+                            <span
+                                class="text-[10px] font-black uppercase bg-blue-900/20 text-blue-500 px-2 py-1">Исходящие</span>
+                            <i data-lucide="phone"
+                                class="text-zinc-700 group-hover:text-blue-500 transition-colors"></i>
                         </div>
-                        <p class="text-4xl font-black text-white mb-2" id="callsPerDay">0</p>
-                        <p class="text-[10px] font-bold uppercase text-zinc-500 tracking-widest">Касаний в день</p>
+                        <p class="text-4xl font-black text-amber-500 mb-2" id="callsPerDay">0</p>
+                        <p class="text-[10px] font-bold uppercase text-zinc-500 tracking-widest">10X Касаний в день</p>
                     </div>
 
                     <!-- Meetings -->
-                    <div class="p-8 border border-zinc-800 bg-zinc-900/50 hover:border-emerald-600 transition-colors group">
+                    <div
+                        class="p-8 border border-zinc-800 bg-zinc-900/50 hover:border-emerald-600 transition-colors group">
                         <div class="flex justify-between items-start mb-6">
-                            <span class="text-[10px] font-black uppercase bg-emerald-900/20 text-emerald-500 px-2 py-1">Presentation</span>
-                            <i data-lucide="presentation" class="text-zinc-700 group-hover:text-emerald-500 transition-colors"></i>
+                            <span
+                                class="text-[10px] font-black uppercase bg-emerald-900/20 text-emerald-500 px-2 py-1">Презентации</span>
+                            <i data-lucide="presentation"
+                                class="text-zinc-700 group-hover:text-emerald-500 transition-colors"></i>
                         </div>
                         <p class="text-4xl font-black text-white mb-2" id="meetingsPerWeek">0</p>
                         <p class="text-[10px] font-bold uppercase text-zinc-500 tracking-widest">Встреч в неделю</p>
                     </div>
 
                     <!-- Close -->
-                    <div class="p-8 border border-zinc-800 bg-zinc-900/50 hover:border-amber-600 transition-colors group">
+                    <div
+                        class="p-8 border border-zinc-800 bg-zinc-900/50 hover:border-amber-600 transition-colors group">
                         <div class="flex justify-between items-start mb-6">
-                            <span class="text-[10px] font-black uppercase bg-amber-900/20 text-amber-500 px-2 py-1">Result</span>
-                            <i data-lucide="check-circle-2" class="text-zinc-700 group-hover:text-amber-500 transition-colors"></i>
+                            <span
+                                class="text-[10px] font-black uppercase bg-amber-900/20 text-amber-500 px-2 py-1">Сделки</span>
+                            <i data-lucide="check-circle-2"
+                                class="text-zinc-700 group-hover:text-amber-500 transition-colors"></i>
                         </div>
                         <p class="text-4xl font-black text-white mb-2" id="dealsPerMonth">0</p>
                         <p class="text-[10px] font-bold uppercase text-zinc-500 tracking-widest">Сделок в месяц</p>
@@ -245,40 +280,49 @@
         </section>
 
         <!-- SECTION 4: CHECKLIST -->
-        <section class="border-t border-zinc-800 pt-16 pb-12">
-            <h2 class="text-xl font-black uppercase tracking-tight text-white mb-8 text-center">Проверка Машины (Vehicle Check)</h2>
+        <section class="border-t border-zinc-800 pt-16 pb-20">
+            <h2 class="text-xl font-black uppercase tracking-tight text-white mb-8 text-center">Проверка Машины</h2>
             <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                 <!-- Driver -->
-                <div class="p-6 border border-zinc-800 hover:bg-zinc-900 transition-colors cursor-pointer group" onclick="toggleCheck(this)">
+                <div class="p-6 border border-zinc-800 hover:bg-zinc-900 transition-colors cursor-pointer group"
+                    onclick="toggleCheck(this)">
                     <div class="flex items-center gap-4 mb-4">
-                        <div class="w-5 h-5 border border-zinc-600 flex items-center justify-center check-box transition-colors">
+                        <div
+                            class="w-5 h-5 border border-zinc-600 flex items-center justify-center check-box transition-colors">
                             <div class="w-3 h-3 bg-amber-500 opacity-0 check-mark transition-opacity"></div>
                         </div>
                         <h4 class="text-sm font-bold uppercase text-white">Водитель</h4>
                     </div>
-                    <p class="text-xs text-zinc-500 leading-relaxed">Готов ли ты к 100 отказам? Есть ли у тебя навыки закрытия сделок?</p>
+                    <p class="text-xs text-zinc-500 leading-relaxed">Готов ли ты к 100 отказам? Есть ли у тебя навыки
+                        закрытия сделок?</p>
                 </div>
 
                 <!-- Fuel -->
-                <div class="p-6 border border-zinc-800 hover:bg-zinc-900 transition-colors cursor-pointer group" onclick="toggleCheck(this)">
+                <div class="p-6 border border-zinc-800 hover:bg-zinc-900 transition-colors cursor-pointer group"
+                    onclick="toggleCheck(this)">
                     <div class="flex items-center gap-4 mb-4">
-                        <div class="w-5 h-5 border border-zinc-600 flex items-center justify-center check-box transition-colors">
+                        <div
+                            class="w-5 h-5 border border-zinc-600 flex items-center justify-center check-box transition-colors">
                             <div class="w-3 h-3 bg-amber-500 opacity-0 check-mark transition-opacity"></div>
                         </div>
                         <h4 class="text-sm font-bold uppercase text-white">Топливо</h4>
                     </div>
-                    <p class="text-xs text-zinc-500 leading-relaxed">Есть ли База 64? Есть ли скрипты? Есть ли энергия?</p>
+                    <p class="text-xs text-zinc-500 leading-relaxed">Есть ли База64? Есть ли скрипты? Есть ли энергия?
+                    </p>
                 </div>
 
                 <!-- Distance -->
-                <div class="p-6 border border-zinc-800 hover:bg-zinc-900 transition-colors cursor-pointer group" onclick="toggleCheck(this)">
+                <div class="p-6 border border-zinc-800 hover:bg-zinc-900 transition-colors cursor-pointer group"
+                    onclick="toggleCheck(this)">
                     <div class="flex items-center gap-4 mb-4">
-                        <div class="w-5 h-5 border border-zinc-600 flex items-center justify-center check-box transition-colors">
+                        <div
+                            class="w-5 h-5 border border-zinc-600 flex items-center justify-center check-box transition-colors">
                             <div class="w-3 h-3 bg-amber-500 opacity-0 check-mark transition-opacity"></div>
                         </div>
                         <h4 class="text-sm font-bold uppercase text-white">Дистанция</h4>
                     </div>
-                    <p class="text-xs text-zinc-500 leading-relaxed">Позволяет ли рынок в этом городе заработать такую сумму?</p>
+                    <p class="text-xs text-zinc-500 leading-relaxed">Позволяет ли текущий рынок заработать такую сумму?
+                    </p>
                 </div>
             </div>
         </section>
@@ -287,7 +331,7 @@
 
     <footer class="border-t border-zinc-900 py-12 text-center bg-black">
         <p class="text-lg font-black uppercase text-white tracking-widest mb-2">ZAUSHITSYN GROUP</p>
-        <p class="text-[10px] uppercase tracking-[0.4em] text-zinc-600 font-bold">Success is your duty</p>
+        <p class="text-[10px] uppercase tracking-[0.4em] text-zinc-600 font-bold">Успех — это твой долг</p>
     </footer>
 
     <script>
@@ -300,7 +344,7 @@
         function calculateMath() {
             const target = parseInt(document.getElementById('targetAmount').value) || 0;
             const days = parseInt(document.getElementById('targetDays').value) || 90;
-            
+
             // Daily Target Update
             const daily = target / days;
             document.getElementById('dailyTargetRevenue').innerText = formatMoney(Math.ceil(daily)) + ' ₽';
@@ -313,15 +357,15 @@
             prices.forEach(price => {
                 const count = Math.ceil(target / price);
                 const dailySales = (count / days).toFixed(1);
-                
+
                 const card = document.createElement('div');
                 card.className = 'scenario-card p-5 border border-zinc-800 bg-zinc-900 cursor-pointer group';
                 card.onclick = () => setProductPrice(price);
-                
+
                 let difficultyColor = 'text-zinc-500';
-                let difficultyText = 'NORMAL';
-                if(dailySales < 1) { difficultyText = 'EASY'; difficultyColor = 'text-emerald-500'; }
-                if(dailySales > 5) { difficultyText = 'HARD'; difficultyColor = 'text-red-500'; }
+                let difficultyText = 'НОРМ';
+                if (dailySales < 1) { difficultyText = 'ЛЕГКО'; difficultyColor = 'text-emerald-500'; }
+                if (dailySales > 5) { difficultyText = 'ТРУДНО'; difficultyColor = 'text-red-500'; }
 
                 card.innerHTML = `
                     <div class="flex justify-between items-start mb-4">
@@ -355,11 +399,11 @@
             if (price <= 0) return;
 
             let totalNeeded;
-            
+
             if (isRecurring) {
                 // Если подписка, считаем LTV за период
                 const months = days / 30;
-                const ltv = price * months; 
+                const ltv = price * months;
                 totalNeeded = Math.ceil(target / ltv);
             } else {
                 totalNeeded = Math.ceil(target / price);
@@ -378,13 +422,14 @@
         function calculateActions() {
             const weeklySales = parseFloat(document.getElementById('neededWeekly').innerText) || 0;
             const monthlySales = parseFloat(document.getElementById('neededMonthly').innerText) || 0;
-            
+
             const convSale = parseInt(document.getElementById('conversionRate').value) / 100 || 0.1;
             const convMeet = parseInt(document.getElementById('meetingRate').value) / 100 || 0.3;
 
             const meetingsNeededWeekly = Math.ceil(weeklySales / convSale);
             const leadsNeededWeekly = Math.ceil(meetingsNeededWeekly / convMeet);
-            const callsPerDay = Math.ceil(leadsNeededWeekly / 5); 
+            // Правило Гранта Кардона: умножаем действия на 10
+            const callsPerDay = Math.ceil(leadsNeededWeekly / 5) * 10;
 
             document.getElementById('callsPerDay').innerText = callsPerDay;
             document.getElementById('meetingsPerWeek').innerText = meetingsNeededWeekly;
@@ -394,7 +439,7 @@
         function toggleCheck(el) {
             const mark = el.querySelector('.check-mark');
             const box = el.querySelector('.check-box');
-            
+
             if (mark.classList.contains('opacity-0')) {
                 mark.classList.remove('opacity-0');
                 box.classList.add('border-amber-500');
@@ -411,4 +456,5 @@
         window.onload = calculateMath;
     </script>
 </body>
+
 </html>
