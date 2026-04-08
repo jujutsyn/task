@@ -2141,7 +2141,7 @@
 
             // Scale: Auto-fit to canvas with safe margin for Dimensions
             // Use smaller padding in PDF to make the visualization significantly larger
-            const PADDING = isExportingPDF ? 100 : 160;
+            const PADDING = isExportingPDF ? 105 : 160;
 
             let logicW = width || 100;
             let effectiveH = height;
@@ -3222,9 +3222,111 @@
                 drawDimensionLine(ctx, dw, dh, dw, 0, p.height, 45, false, (val) => updateState('product.height', val), ew);
             }
 
+            p.features.forEach(f => {
+                if (f.type !== 'zipper') {
+                    const { x: rX, y: rY, w: rW, h: rH, pos } = getCutoutRect(f, dw, dh, scale, ew);
+                    const w1_real = f.width || f.w1;
+                    const w2_real = f.depth || f.w2;
+
+                    let drawW_real = w1_real;
+                    let drawH_real = w2_real;
+                    if (['lc', 'rc'].includes(pos)) {
+                        drawW_real = w2_real;
+                        drawH_real = w1_real;
+                    }
+
+                    let ptW, ptH;
+                    if (pos === 'tl') {
+                        ptW = { x: rX + rW / 2, y: rY + rH, dir: 'up' };
+                        ptH = { x: rX + rW, y: rY + rH / 2, dir: 'left' };
+                    } else if (pos === 'tc') {
+                        ptW = { x: rX + rW / 2, y: rY + rH, dir: 'up' };
+                        ptH = { x: rX, y: rY + rH / 2, dir: 'right' };
+                    } else if (pos === 'tr') {
+                        ptW = { x: rX + rW / 2, y: rY + rH, dir: 'up' };
+                        ptH = { x: rX, y: rY + rH / 2, dir: 'right' };
+                    } else if (pos === 'rc') {
+                        ptW = { x: rX + rW / 2, y: rY, dir: 'down' };
+                        ptH = { x: rX, y: rY + rH / 2, dir: 'right' };
+                    } else if (pos === 'br') {
+                        ptW = { x: rX + rW / 2, y: rY, dir: 'down' };
+                        ptH = { x: rX, y: rY + rH / 2, dir: 'right' };
+                    } else if (pos === 'bc') {
+                        ptW = { x: rX + rW / 2, y: rY, dir: 'down' };
+                        ptH = { x: rX, y: rY + rH / 2, dir: 'right' };
+                    } else if (pos === 'bl') {
+                        ptW = { x: rX + rW / 2, y: rY, dir: 'down' };
+                        ptH = { x: rX + rW, y: rY + rH / 2, dir: 'left' };
+                    } else if (pos === 'lc') {
+                        ptW = { x: rX + rW / 2, y: rY, dir: 'down' };
+                        ptH = { x: rX + rW, y: rY + rH / 2, dir: 'left' };
+                    }
+
+                    if (ptW) drawCutoutLabel(ctx, drawW_real.toString(), ptW.x, ptW.y, ptW.dir);
+                    if (ptH) drawCutoutLabel(ctx, drawH_real.toString(), ptH.x, ptH.y, ptH.dir);
+                }
+            });
+
             ctx.restore();
         }
 
+        function drawCutoutLabel(ctx, text, x, y, pointDir) {
+            ctx.save();
+            const isExpPDF = typeof isExportingPDF !== 'undefined' && isExportingPDF;
+            const fontSize = isExpPDF ? 16 : 13;
+            ctx.font = `bold ${fontSize}px Inter, sans-serif`;
+            const metrics = ctx.measureText(text);
+            const boxW = Math.max(metrics.width + 12, 28);
+            const boxH = isExpPDF ? 26 : 22;
+
+            let bx = x, by = y;
+            const tailOff = 6;
+
+            if (pointDir === 'up') by = y + tailOff + boxH / 2;
+            else if (pointDir === 'down') by = y - tailOff - boxH / 2;
+            else if (pointDir === 'left') bx = x + tailOff + boxW / 2;
+            else if (pointDir === 'right') bx = x - tailOff - boxW / 2;
+
+            ctx.translate(bx, by);
+            ctx.fillStyle = '#fff';
+            ctx.strokeStyle = '#94a3b8';
+            ctx.lineWidth = 1;
+
+            // Draw tail
+            ctx.beginPath();
+            if (pointDir === 'up') {
+                ctx.moveTo(-5, -boxH / 2 + 1); ctx.lineTo(5, -boxH / 2 + 1); ctx.lineTo(0, -boxH / 2 - tailOff);
+            } else if (pointDir === 'down') {
+                ctx.moveTo(-5, boxH / 2 - 1); ctx.lineTo(5, boxH / 2 - 1); ctx.lineTo(0, boxH / 2 + tailOff);
+            } else if (pointDir === 'left') {
+                ctx.moveTo(-boxW / 2 + 1, -5); ctx.lineTo(-boxW / 2 + 1, 5); ctx.lineTo(-boxW / 2 - tailOff, 0);
+            } else if (pointDir === 'right') {
+                ctx.moveTo(boxW / 2 - 1, -5); ctx.lineTo(boxW / 2 - 1, 5); ctx.lineTo(boxW / 2 + tailOff, 0);
+            }
+            ctx.closePath();
+            ctx.fill(); ctx.stroke();
+
+            // Draw pill
+            ctx.beginPath();
+            ctx.roundRect(-boxW / 2, -boxH / 2, boxW, boxH, 4);
+            ctx.fill(); ctx.stroke();
+
+            // To mask the line between them
+            ctx.beginPath();
+            if (pointDir === 'up') { ctx.moveTo(-4, -boxH / 2); ctx.lineTo(4, -boxH / 2); }
+            else if (pointDir === 'down') { ctx.moveTo(-4, boxH / 2); ctx.lineTo(4, boxH / 2); }
+            else if (pointDir === 'left') { ctx.moveTo(-boxW / 2, -4); ctx.lineTo(-boxW / 2, 4); }
+            else if (pointDir === 'right') { ctx.moveTo(boxW / 2, -4); ctx.lineTo(boxW / 2, 4); }
+            ctx.strokeStyle = '#fff';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            ctx.fillStyle = '#0f172a';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText(text, 0, 1);
+            ctx.restore();
+        }
 
         function drawDimensionLine(ctx, x1, y1, x2, y2, value, offset, isAbsoluteOffset = false, onUpdate = null, ew = 5) {
             ctx.save();
@@ -3377,10 +3479,11 @@
                 ctx.translate(midX, midY);
                 ctx.rotate(angle);
 
-                ctx.font = `bold 14px Inter, sans-serif`;
+                const fontSize = isExportingPDF ? 18 : 14;
+                ctx.font = `bold ${fontSize}px Inter, sans-serif`;
                 const textMetrics = ctx.measureText(labelText);
-                const boxW = textMetrics.width + 20;
-                const boxH = 24;
+                const boxW = textMetrics.width + (isExportingPDF ? 28 : 20);
+                const boxH = isExportingPDF ? 32 : 24;
 
                 ctx.fillStyle = '#fff';
                 ctx.strokeStyle = '#cbd5e1';
@@ -6108,8 +6211,8 @@
         <style>
           .pdf-page { width: 1100px; height: 740px; overflow: hidden; padding: 40px; box-sizing: border-box; position: relative; display: flex; flex-direction: column; background: white; color: black; font-family: 'Inter', sans-serif; }
           .pdf-row { display: flex; flex-direction: row; height: 100%; }
-          .pdf-col-left { flex: 1.2; padding-right: 40px; display: flex; flex-direction: column; }
-          .pdf-col-right { flex: 0.8; padding-left: 40px; border-left: 1px solid #ddd; display: flex; flex-direction: column; }
+          .pdf-col-left { flex: 1.4; padding-right: 40px; display: flex; flex-direction: column; }
+          .pdf-col-right { flex: 0.6; padding-left: 40px; border-left: 1px solid #ddd; display: flex; flex-direction: column; }
           .pdf-info-grid { display: grid; grid-template-columns: 140px 1fr; row-gap: 12px; margin-top: 30px; font-size: 14px; }
           .pdf-info-grid span:first-child { color: #555; }
           .pdf-subhed { font-size: 18px; font-weight: bold; margin-top: 20px; margin-bottom: 10px; }
@@ -6418,7 +6521,7 @@
                 html += `
           <div class="html2pdf__page-break"></div>
           <div class="pdf-page" style="flex-direction:row;">
-             <div style="flex: 1.3; display: flex; flex-direction: column; padding-right: 20px;">
+             <div style="flex: 1.5; display: flex; flex-direction: column; padding-right: 20px;">
                 <div style="font-size: 20px; color: #1e293b; margin-bottom: 20px; font-weight:600;">Окно №${i + 1} из ${OrderState.products.length} - Заказ ${orderNum}</div>
                 <div style="flex: 1; display:flex; justify-content:center; align-items:center; position:relative;">
                    <img src="${imgData}" style="max-width: 100%; max-height: 100%; object-fit: contain;">
@@ -6426,7 +6529,7 @@
                 <div style="font-size: 11px; color: #64748b; margin-top:15px;">Чертеж сформирован автоматически</div>
              </div>
 
-             <div style="flex: 0.7; padding-left: 30px; border-left: 1px solid #ddd; display: flex; flex-direction: column; overflow-y: auto;">
+             <div style="flex: 0.5; padding-left: 30px; border-left: 1px solid #ddd; display: flex; flex-direction: column; overflow-y: auto;">
                 <div style="font-size: 18px; font-weight:bold; margin-bottom: 15px; text-align:center;">Раскрой материалов</div>
                 
                 <div style="font-size: 13px; margin-bottom: 5px;">${matTypeMap[p.material.type] || p.material.type}:</div>
